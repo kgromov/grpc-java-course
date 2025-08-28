@@ -10,13 +10,14 @@ public class Demo {
 
     public static void main(String[] args) {
 
-        GrpcServer.create(6565, builder -> {
-                      builder.addService(new BankService())
-                             .intercept(new ApiKeyValidationInterceptor());
-                  })
+        GrpcServer server = GrpcServer.create(6565, builder -> {
+            builder.addService(new BankService())
+                    .intercept(new ApiKeyValidationInterceptor());
+        });
+        server
                   .start()
                   .await();
-
+        Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
     }
 
 

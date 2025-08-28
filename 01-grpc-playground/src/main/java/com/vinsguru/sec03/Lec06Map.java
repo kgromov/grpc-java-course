@@ -6,6 +6,8 @@ import com.vinsguru.models.sec03.Dealer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 public class Lec06Map {
 
     private static final Logger log = LoggerFactory.getLogger(Lec06Map.class);
@@ -26,6 +28,7 @@ public class Lec06Map {
                       .build();
 
         var dealer = Dealer.newBuilder()
+//                           .putAllInventory(Map.of(car1.getYear(), car1, car2.getYear(), car2))
                            .putInventory(car1.getYear(), car1)
                            .putInventory(car2.getYear(), car2)
                            .build();

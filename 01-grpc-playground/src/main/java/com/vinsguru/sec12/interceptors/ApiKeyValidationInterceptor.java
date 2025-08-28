@@ -19,8 +19,7 @@ public class ApiKeyValidationInterceptor implements ServerInterceptor {
                 Status.UNAUTHENTICATED.withDescription("client must provide valid api key"),
                 metadata
         );
-        return new ServerCall.Listener<ReqT>() {
-        };
+        return new ServerCall.Listener<>() {};
     }
 
     private boolean isValid(String apiKey){

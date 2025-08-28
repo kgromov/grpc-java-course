@@ -1,5 +1,6 @@
 package com.vinsguru.sec04;
 
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Timestamp;
 import com.vinsguru.models.sec04.Sample;
@@ -18,6 +19,8 @@ public class Lec02WellKnownTypes {
                 .setAge(Int32Value.of(12))
                 .setLoginTime(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond()).build())
                 .build();
+        Descriptors.FieldDescriptor fieldByNumber = sample.getDescriptorForType().findFieldByNumber(Sample.AGE_FIELD_NUMBER);
+        sample.hasField(fieldByNumber);
 
         log.info("{}", Instant.ofEpochSecond(sample.getLoginTime().getSeconds()));
 

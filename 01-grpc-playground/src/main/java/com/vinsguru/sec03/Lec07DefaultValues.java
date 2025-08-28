@@ -1,5 +1,6 @@
 package com.vinsguru.sec03;
 
+import com.google.protobuf.Descriptors;
 import com.vinsguru.models.sec03.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,9 @@ public class Lec07DefaultValues {
 
         // has
         log.info("has address? {}", school.hasAddress());
+        // for not optional scalar fields corresponding has${field_name} methods are not generated
+        Descriptors.FieldDescriptor nameField = School.getDescriptor().findFieldByName("name");
+        log.info("has name? {}", school.hasField(nameField));
 
         // collection
         var lib = Library.newBuilder().build();
