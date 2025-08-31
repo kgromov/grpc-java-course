@@ -1,7 +1,10 @@
 package com.vinsguru.sec03;
 
+import ch.qos.logback.core.model.Model;
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
+import com.dslplatform.json.DslJson;
+import com.dslplatform.json.runtime.Settings;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -14,6 +17,8 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
@@ -25,6 +30,8 @@ public class Lec03PerformanceTest {
     private static final Map<Class<?>, Yaml> yamlCache = new HashMap<>();
     private static final Gson gson = new Gson();
     private static final Genson genson = new Genson();
+    private static final DslJson<Object> dslJson = new DslJson<>(Settings.withRuntime().includeServiceLoader());
+    private static final com.dslplatform.json.JsonWriter writer = dslJson.newWriter();
 
     public static void main(String[] args) {
 
@@ -53,32 +60,39 @@ public class Lec03PerformanceTest {
         /*
             Trivial benchmarks for 1M objects:
             proto: LongSummaryStatistics{count=5, sum=1350, min=128, average=270.000000, max=692}
+            dslJson: LongSummaryStatistics{count=5, sum=3988, min=766, average=797.600000, max=873}
             jackson: LongSummaryStatistics{count=5, sum=6026, min=1107, average=1205.200000, max=1558}
             gson: LongSummaryStatistics{count=5, sum=12282, min=2322, average=2456.400000, max=2597}
             genson: LongSummaryStatistics{count=5, sum=14795, min=2794, average=2959.000000, max=3228}
             jsonio: jsonio: LongSummaryStatistics{count=5, sum=69550, min=13609, average=13910.000000, max=14241}
             yaml:  yaml: LongSummaryStatistics{count=5, sum=71444, min=13559, average=14288.800000, max=15070} (string)
          */
-        var jackson = new LongSummaryStatistics();
-        var gson = new LongSummaryStatistics();
-        var genson = new LongSummaryStatistics();
-        var proto = new LongSummaryStatistics();
-        var yaml = new LongSummaryStatistics();
-        var jsonio = new LongSummaryStatistics();
+//        var jackson = new LongSummaryStatistics();
+//        var gson = new LongSummaryStatistics();
+//        var genson = new LongSummaryStatistics();
+//        var proto = new LongSummaryStatistics();
+//        var yaml = new LongSummaryStatistics();
+//        var jsonio = new LongSummaryStatistics();
+        var dslJson = new LongSummaryStatistics();
+        var dslJson2 = new LongSummaryStatistics();
         for (int i = 0; i < 5; i++) {
-            proto.accept(runTest("proto", () -> proto(protoPerson)));
-            jackson.accept(runTest("json", () -> jackson(jsonPerson, JsonPersonRecord.class)));
-            gson.accept(runTest("gson", () -> gson(jsonPerson, JsonPersonRecord.class)));
-            genson.accept(runTest("genson", () -> genson(jsonPerson2, JsonPerson.class)));    // does not support records
-            genson.accept(runTest("jsonio", () -> genson(jsonPerson2, JsonPerson.class)));    // does not support records
-            yaml.accept(runTest("yaml", () -> jsonio(jsonPerson2, JsonPerson.class)));  // does not support records
+//            proto.accept(runTest("proto", () -> proto(protoPerson)));
+//            jackson.accept(runTest("json", () -> jackson(jsonPerson, JsonPersonRecord.class)));
+//            gson.accept(runTest("gson", () -> gson(jsonPerson, JsonPersonRecord.class)));
+//            genson.accept(runTest("genson", () -> genson(jsonPerson2, JsonPerson.class)));    // does not support records
+//            genson.accept(runTest("jsonio", () -> genson(jsonPerson2, JsonPerson.class)));    // does not support records
+//            yaml.accept(runTest("yaml", () -> jsonio(jsonPerson2, JsonPerson.class)));  // does not support records
+            dslJson.accept(runTest("dslJson", () -> dslJson(jsonPerson, JsonPersonRecord.class)));
+            dslJson2.accept(runTest("dslJson2", () -> dslJson2(jsonPerson, JsonPersonRecord.class)));
         }
-        log.info("jackson: {}", jackson);
-        log.info("gson: {}", gson);
-        log.info("genson: {}", genson);
-        log.info("proto: {}", proto);
-        log.info("jsonio: {}", jsonio);
-        log.info("yaml: {}", yaml);
+//        log.info("jackson: {}", jackson);
+//        log.info("gson: {}", gson);
+//        log.info("genson: {}", genson);
+//        log.info("proto: {}", proto);
+//        log.info("jsonio: {}", jsonio);
+//        log.info("yaml: {}", yaml);
+        log.info("dslJson: {}", dslJson);
+        log.info("dslJson2: {}", dslJson2);
     }
 
     private static void proto(Person person) {
@@ -137,6 +151,28 @@ public class Lec03PerformanceTest {
             byte[] bytes = content.getBytes();
             log.trace("yaml bytes length: {}", bytes.length);
             yaml.load(content);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static <T> void dslJson(T person, Class<T> clazz) {
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            dslJson.serialize(person, os);
+            ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+            T object = dslJson.deserialize(clazz, is);
+            int a = 1;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static <T> void dslJson2(T object, Class<T> clazz) {
+        try {
+            dslJson.serialize(writer, object);
+            byte[] buffer = writer.getByteBuffer();
+            T value = dslJson.deserialize(clazz, buffer, writer.size());
+            int a = 1;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
