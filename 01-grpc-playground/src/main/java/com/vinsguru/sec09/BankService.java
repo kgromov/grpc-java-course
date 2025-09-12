@@ -44,17 +44,17 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
                 .map(Status::asRuntimeException)
                 .ifPresentOrElse(
                         responseObserver::onError,
-                        () -> sendMoney(request, responseObserver)
+                        () -> sendWithdrawMoney(request, responseObserver)
                 );
     }
 
-    private void sendMoney(WithdrawRequest request, StreamObserver<Money> responseObserver) {
+    private void sendWithdrawMoney(WithdrawRequest request, StreamObserver<Money> responseObserver) {
         var accountNumber = request.getAccountNumber();
         var requestedAmount = request.getAmount();
         for (int i = 0; i < (requestedAmount / 10); i++) {
             var money = Money.newBuilder().setAmount(10).build();
             responseObserver.onNext(money);
-            log.info("money sent {}", money);
+            log.info("money withdraw {}", money);
             AccountRepository.deductAmount(accountNumber, 10);
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
         }

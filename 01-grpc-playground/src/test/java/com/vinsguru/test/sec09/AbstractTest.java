@@ -4,8 +4,11 @@ import com.vinsguru.common.GrpcServer;
 import com.vinsguru.models.sec09.BankServiceGrpc;
 import com.vinsguru.sec09.BankService;
 import com.vinsguru.test.common.AbstractChannelTest;
+import io.grpc.Status;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+
+import java.util.Optional;
 
 public abstract class AbstractTest extends AbstractChannelTest {
 
@@ -25,4 +28,10 @@ public abstract class AbstractTest extends AbstractChannelTest {
         this.grpcServer.stop();
     }
 
+
+    protected Status.Code  extractStatusCode(Throwable throwable) {
+        return Optional.ofNullable(Status.fromThrowable(throwable))
+                .map(Status::getCode)
+                .orElseThrow();
+    }
 }

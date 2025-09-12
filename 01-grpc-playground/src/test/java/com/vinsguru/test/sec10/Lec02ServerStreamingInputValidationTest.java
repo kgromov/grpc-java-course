@@ -16,23 +16,23 @@ public class Lec02ServerStreamingInputValidationTest extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("testdata")
-    public void blockingInputValidationTest(WithdrawRequest request, ValidationCode code){
+    public void blockingInputValidationTest(WithdrawRequest request, ValidationCode expectedCode){
         var ex = Assertions.assertThrows(StatusRuntimeException.class, () -> {
             var response = this.bankBlockingStub.withdraw(request).hasNext();
         });
-        Assertions.assertEquals(code, getValidationCode(ex));
+        Assertions.assertEquals(expectedCode, getValidationCode(ex));
     }
 
     @ParameterizedTest
     @MethodSource("testdata")
-    public void asyncInputValidationTest(WithdrawRequest request, ValidationCode code){
+    public void asyncInputValidationTest(WithdrawRequest request, ValidationCode expectedCode){
         var observer = ResponseObserver.<Money>create();
         this.bankStub.withdraw(request, observer);
         observer.await();
 
         Assertions.assertTrue(observer.getItems().isEmpty());
         Assertions.assertNotNull(observer.getThrowable());
-        Assertions.assertEquals(code, getValidationCode(observer.getThrowable()));
+        Assertions.assertEquals(expectedCode, getValidationCode(observer.getThrowable()));
     }
 
     private Stream<Arguments> testdata(){

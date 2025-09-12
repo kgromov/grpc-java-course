@@ -41,6 +41,7 @@ public class GrpcSSLTest extends AbstractTest {
         var observer = ResponseObserver.<Money>create();
         stub.withdraw(request, observer);
         observer.await();
+        log.info("{}", observer.getItems());
 
         channel.shutdownNow();
     }

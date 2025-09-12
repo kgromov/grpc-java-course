@@ -4,13 +4,12 @@ import com.vinsguru.common.GrpcServer;
 import com.vinsguru.models.sec08.GuessNumberGrpc;
 import com.vinsguru.sec08.GuessNumberService;
 import com.vinsguru.test.common.AbstractChannelTest;
-import io.grpc.Status;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.stream.IntStream;
 
 /*
     It is simply a demo class

@@ -19,6 +19,7 @@ public class GuessNumberService extends GuessNumberGrpc.GuessNumberImplBase {
         return new GuessRequestHandler(responseObserver);
     }
 
+    // TODO: Implement vice versa (client guessing the number)
     private static class GuessRequestHandler implements StreamObserver<GuessRequest> {
 
         private final StreamObserver<GuessResponse> responseObserver;

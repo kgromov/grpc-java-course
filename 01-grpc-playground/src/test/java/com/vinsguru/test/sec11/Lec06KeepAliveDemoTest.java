@@ -6,10 +6,7 @@ import com.vinsguru.models.sec11.BalanceCheckRequest;
 import com.vinsguru.models.sec11.BankServiceGrpc;
 import com.vinsguru.sec11.DeadlineBankService;
 import com.vinsguru.test.common.AbstractChannelTest;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -35,7 +32,7 @@ public class Lec06KeepAliveDemoTest extends AbstractChannelTest {
     /*
         Configure the server with keep alive
      */
-    // @Test
+     @Test
     public void keepAliveDemo() {
         var request = BalanceCheckRequest.newBuilder()
                                          .setAccountNumber(1)
@@ -44,7 +41,7 @@ public class Lec06KeepAliveDemoTest extends AbstractChannelTest {
         log.info("{}", response);
 
         // just blocking the thread for 30 seconds
-        Uninterruptibles.sleepUninterruptibly(30, TimeUnit.SECONDS);
+        Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
     }
 
     @AfterAll

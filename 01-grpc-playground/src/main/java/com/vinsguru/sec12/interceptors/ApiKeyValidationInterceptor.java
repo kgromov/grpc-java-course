@@ -5,7 +5,7 @@ import io.grpc.*;
 
 import java.util.Objects;
 
-public class ApiKeyValidationInterceptor implements ServerInterceptor {
+    public class ApiKeyValidationInterceptor implements ServerInterceptor {
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> serverCall,

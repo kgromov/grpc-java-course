@@ -5,10 +5,11 @@ import com.vinsguru.models.sec12.BalanceCheckRequest;
 import com.vinsguru.models.sec12.Money;
 import com.vinsguru.models.sec12.WithdrawRequest;
 import com.vinsguru.sec12.BankService;
-import com.vinsguru.sec12.Constants;
 import com.vinsguru.sec12.interceptors.UserTokenInterceptor;
 import com.vinsguru.test.common.ResponseObserver;
-import io.grpc.*;
+import io.grpc.ClientInterceptor;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 public class Lec06UserSessionTokenInterceptorTest extends AbstractInterceptorTest {
 
@@ -62,7 +62,6 @@ public class Lec06UserSessionTokenInterceptorTest extends AbstractInterceptorTes
         Assertions.assertEquals(Status.Code.UNAUTHENTICATED, ex.getStatus().getCode());
     }
 
-
     @Test
     public void streamingUserCredentialsDemo(){
         for (int i = 1; i <= 5 ; i++) {
@@ -77,25 +76,4 @@ public class Lec06UserSessionTokenInterceptorTest extends AbstractInterceptorTes
             observer.await();
         }
     }
-
-    private static class UserSessionToken extends CallCredentials {
-
-        private static final String TOKEN_FORMAT = "%s %s";
-        private final String jwt;
-
-        public UserSessionToken(String jwt) {
-            this.jwt = jwt;
-        }
-
-        @Override
-        public void applyRequestMetadata(RequestInfo requestInfo, Executor executor, MetadataApplier metadataApplier) {
-            executor.execute(() -> {
-                var metadata = new Metadata();
-                metadata.put(Constants.USER_TOKEN_KEY, TOKEN_FORMAT.formatted(Constants.BEARER, jwt));
-                metadataApplier.apply(metadata);
-            });
-        }
-
-    }
-
 }

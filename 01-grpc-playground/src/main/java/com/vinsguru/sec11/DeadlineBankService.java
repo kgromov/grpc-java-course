@@ -45,7 +45,7 @@ public class DeadlineBankService extends BankServiceGrpc.BankServiceImplBase {
         for (int i = 0; i < (requestedAmount / 10) && !Context.current().isCancelled(); i++) {
             var money = Money.newBuilder().setAmount(10).build();
             responseObserver.onNext(money);
-            log.info("money sent {}", money);
+            log.info("money withdraw {}", money);
             AccountRepository.deductAmount(accountNumber, 10);
             Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
         }

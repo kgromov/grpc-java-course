@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import com.vinsguru.models.sec10.*;
 import com.vinsguru.sec10.repository.AccountRepository;
 import com.vinsguru.sec10.validator.RequestValidator;
-import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +40,9 @@ public class BankService extends BankServiceGrpc.BankServiceImplBase {
                         .or(() -> RequestValidator.isAmountDivisibleBy10(request.getAmount()))
                         .or(() -> RequestValidator.hasSufficientBalance(request.getAmount(), AccountRepository.getBalance(request.getAccountNumber())))
                         .ifPresentOrElse(
-                        responseObserver::onError,
-                        () -> sendMoney(request, responseObserver)
-                );
+                            responseObserver::onError,
+                            () -> sendMoney(request, responseObserver)
+                        );
     }
 
     private void sendMoney(WithdrawRequest request, StreamObserver<Money> responseObserver) {

@@ -42,7 +42,7 @@ public class GuessResponseHandler implements StreamObserver<GuessResponse> {
         this.lower = low;
         this.upper = high;
         this.middle = low + (high - low) / 2;
-        log.info("client guessed {}", this.middle);
+        log.info("client guess (next attempt) {}", this.middle);
         this.requestObserver.onNext(GuessRequest.newBuilder().setGuess(this.middle).build());
     }
 

@@ -8,14 +8,10 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
-public class Lec01UnaryDeadlineTest extends AbstractTest {
-
-    private static final Logger log = LoggerFactory.getLogger(Lec01UnaryDeadlineTest.class);
+public class  Lec01UnaryDeadlineTest extends AbstractTest {
 
     @Test
     public void blockingDeadlineTest(){

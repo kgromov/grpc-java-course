@@ -17,7 +17,7 @@ public class RequestValidator {
         if(amount > 0 && amount % 10 == 0){
             return Optional.empty();
         }
-        return Optional.of(Status.INVALID_ARGUMENT.withDescription("requested amount should be 10 multiples"));
+        return Optional.of(Status.INVALID_ARGUMENT.withDescription("requested amount should be times of 10"));
     }
 
     public static Optional<Status> hasSufficientBalance(int amount, int balance){

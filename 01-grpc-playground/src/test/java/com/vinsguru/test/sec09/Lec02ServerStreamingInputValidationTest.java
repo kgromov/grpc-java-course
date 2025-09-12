@@ -1,7 +1,5 @@
 package com.vinsguru.test.sec09;
 
-import com.vinsguru.models.sec09.AccountBalance;
-import com.vinsguru.models.sec09.BalanceCheckRequest;
 import com.vinsguru.models.sec09.Money;
 import com.vinsguru.models.sec09.WithdrawRequest;
 import com.vinsguru.test.common.ResponseObserver;
@@ -34,7 +32,7 @@ public class Lec02ServerStreamingInputValidationTest extends AbstractTest {
 
         Assertions.assertTrue(observer.getItems().isEmpty());
         Assertions.assertNotNull(observer.getThrowable());
-        Assertions.assertEquals(code, ((StatusRuntimeException) observer.getThrowable()).getStatus().getCode());
+        Assertions.assertEquals(code, this.extractStatusCode(observer.getThrowable()));
     }
 
     private Stream<Arguments> testdata(){
