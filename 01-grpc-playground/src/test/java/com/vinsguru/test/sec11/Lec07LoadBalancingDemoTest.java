@@ -33,8 +33,8 @@ public class Lec07LoadBalancingDemoTest {
         this.bankBlockingStub = BankServiceGrpc.newBlockingStub(channel);
     }
 
-    // I do not want to run this as part of mvn test
-    //@Test
+    // TODO: should be a separate a separate lifecycle phase and better with profile
+    @Test
     public void loadBalancingDemo() {
         for (int i = 1; i <= 10 ; i++) {
             var request = BalanceCheckRequest.newBuilder()
