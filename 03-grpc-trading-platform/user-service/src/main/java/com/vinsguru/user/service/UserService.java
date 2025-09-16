@@ -32,9 +32,9 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void tradeStock(StockTradeRequest request, StreamObserver<StockTradeResponse> responseObserver) {
         log.info("{}", request);
-        var response = TradeAction.SELL.equals(request.getAction()) ?
-                this.tradeRequestHandler.sellStock(request) :
-                this.tradeRequestHandler.buyStock(request);
+        var response = TradeAction.SELL.equals(request.getAction())
+                ? this.tradeRequestHandler.sellStock(request)
+                : this.tradeRequestHandler.buyStock(request);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

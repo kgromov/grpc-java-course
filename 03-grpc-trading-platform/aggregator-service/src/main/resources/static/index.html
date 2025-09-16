@@ -189,7 +189,7 @@
 
             // get price updates
             const stockPriceUpdates = () => {
-                var source = new EventSource("/stock/updates");
+                const source = new EventSource("/stock/updates");
                 source.onmessage = (evt) => {
                     let event = JSON.parse(evt.data);
                     let element = document.getElementById(event.ticker);
