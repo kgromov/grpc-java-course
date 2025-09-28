@@ -1,18 +1,14 @@
-package com.vinsguru.sec08;
+package com.vinsguru.guessNumber;
 
 import com.vinsguru.models.sec08.GuessNumberGrpc;
 import com.vinsguru.models.sec08.GuessRequest;
 import com.vinsguru.models.sec08.GuessResponse;
 import com.vinsguru.models.sec08.Result;
 import io.grpc.stub.StreamObserver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GuessNumberService extends GuessNumberGrpc.GuessNumberImplBase {
-
-    private static final Logger log = LoggerFactory.getLogger(GuessNumberService.class);
 
     @Override
     public StreamObserver<GuessRequest> makeGuess(StreamObserver<GuessResponse> responseObserver) {
@@ -33,14 +29,14 @@ public class GuessNumberService extends GuessNumberGrpc.GuessNumberImplBase {
 
         @Override
         public void onNext(GuessRequest guessRequest) {
-            if (guessRequest.getGuess() > secret) {
-                this.send(Result.TOO_HIGH);
-            } else if (guessRequest.getGuess() < secret) {
-                this.send(Result.TOO_LOW);
-            } else {
-                log.info("client guess {} is correct", guessRequest.getGuess());
-                this.send(Result.CORRECT);
+            if (guessRequest.getGuess() == secret) {
+                System.out.printf("client guess %d is correct%n", guessRequest.getGuess());
+                System.out.printf("Win after %d attempts%n", (++attempt));
                 this.responseObserver.onCompleted();
+            } else if (guessRequest.getGuess() > secret) {
+                this.send(Result.TOO_HIGH);
+            } else {
+                this.send(Result.TOO_LOW);
             }
         }
 
@@ -60,6 +56,7 @@ public class GuessNumberService extends GuessNumberGrpc.GuessNumberImplBase {
                     .setAttempt(attempt)
                     .setResult(result)
                     .build();
+            System.out.printf("client guess is %s%nNext (%d) attempt%n", result, attempt + 1);
             this.responseObserver.onNext(response);
         }
     }
